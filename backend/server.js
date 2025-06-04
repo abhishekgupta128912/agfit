@@ -29,6 +29,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/profile', require('./routes/profile'));
 app.use('/api/ai', require('./routes/ai'));
+app.use('/api/progress', require('./routes/progress'));
 // app.use('/api/users', require('./routes/users'));
 
 // Error handling middleware

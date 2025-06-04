@@ -99,28 +99,29 @@ export const profileAPI = {
   }
 };
 
-// AI API functions (for future use)
+// AI API functions
 export const aiAPI = {
-  // Get AI recommendations
-  getRecommendations: async (profileData) => {
-    const response = await api.post('/ai/recommendations', profileData);
-    return response.data;
-  }
+  generateNutritionPlan: (data) => api.post('/ai/nutrition', data),
+  generateWorkoutPlan: (data) => api.post('/ai/workout', data),
+  generateWellnessPlan: (data) => api.post('/ai/wellness', data),
+  generateComprehensivePlan: (data) => api.post('/ai/comprehensive', data),
+  getRecommendations: (params) => api.get('/ai/recommendations', { params }),
+  getRecommendation: (id) => api.get(`/ai/recommendations/${id}`),
+  addFeedback: (id, feedback) => api.post(`/ai/recommendations/${id}/feedback`, feedback),
+  followRecommendation: (id) => api.put(`/ai/recommendations/${id}/follow`),
+  archiveRecommendation: (id) => api.delete(`/ai/recommendations/${id}`),
+  getStats: () => api.get('/ai/stats')
 };
 
-// Progress API functions (for future use)
+// Progress API functions
 export const progressAPI = {
-  // Get user progress
-  getProgress: async (dateRange) => {
-    const response = await api.get('/progress', { params: dateRange });
-    return response.data;
-  },
-
-  // Update daily progress
-  updateProgress: async (progressData) => {
-    const response = await api.post('/progress', progressData);
-    return response.data;
-  }
+  getTodayProgress: () => api.get('/progress/today'),
+  updateTodayProgress: (data) => api.put('/progress/today', data),
+  logMeal: (mealData) => api.post('/progress/meal', mealData),
+  logWater: (waterData) => api.post('/progress/water', waterData),
+  completeExercise: (exerciseData) => api.post('/progress/exercise', exerciseData),
+  getProgressHistory: (params) => api.get('/progress/history', { params }),
+  getUserStats: () => api.get('/progress/stats')
 };
 
 export default api;
