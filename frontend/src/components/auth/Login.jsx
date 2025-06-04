@@ -112,18 +112,30 @@ const Login = () => {
               />
 
               {/* Password Field */}
-              <Input
-                label="Password"
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter your password"
-                error={validationErrors.password}
-                autoComplete="current-password"
-                showPasswordToggle={true}
-                size="lg"
-              />
+              <div>
+                <Input
+                  label="Password"
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  error={validationErrors.password}
+                  autoComplete="current-password"
+                  showPasswordToggle={true}
+                  size="lg"
+                />
+
+                {/* Forgot Password Link */}
+                <div className="text-right mt-2">
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm text-primary-600 hover:text-primary-500 transition-colors"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+              </div>
 
               {/* Server Error */}
               {error && (

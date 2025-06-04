@@ -3,7 +3,9 @@ const {
   registerUser,
   loginUser,
   getMe,
-  logoutUser
+  logoutUser,
+  forgotPassword,
+  resetPassword
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 
@@ -28,5 +30,15 @@ router.get('/me', protect, getMe);
 // @desc    Logout user
 // @access  Private
 router.post('/logout', protect, logoutUser);
+
+// @route   POST /api/auth/forgot-password
+// @desc    Send password reset email
+// @access  Public
+router.post('/forgot-password', forgotPassword);
+
+// @route   POST /api/auth/reset-password
+// @desc    Reset password with token
+// @access  Public
+router.post('/reset-password', resetPassword);
 
 module.exports = router;
