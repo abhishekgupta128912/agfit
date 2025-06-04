@@ -19,15 +19,16 @@ const Card = ({
     primary: 'border-primary-200 bg-primary-50',
     success: 'border-green-200 bg-green-50',
     warning: 'border-yellow-200 bg-yellow-50',
-    danger: 'border-red-200 bg-red-50'
+    danger: 'border-red-200 bg-red-50',
+    mobile: 'border-gray-200 mx-4 mb-4 md:mx-0 md:mb-0' // Mobile-specific spacing
   };
 
   const paddings = {
     none: '',
-    sm: 'p-4',
-    default: 'p-6',
-    lg: 'p-8',
-    xl: 'p-10'
+    sm: 'p-3 md:p-4', // Smaller padding on mobile
+    default: 'p-4 md:p-6',
+    lg: 'p-5 md:p-8',
+    xl: 'p-6 md:p-10'
   };
 
   const shadows = {
@@ -38,7 +39,7 @@ const Card = ({
     xl: 'shadow-xl'
   };
 
-  const hoverEffects = hover ? 'hover:shadow-md hover:-translate-y-0.5 cursor-pointer' : '';
+  const hoverEffects = hover ? 'hover:shadow-md hover:-translate-y-0.5 cursor-pointer active:scale-[0.98] transition-transform' : '';
 
   const classes = [
     baseClasses,

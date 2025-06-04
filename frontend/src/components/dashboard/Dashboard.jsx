@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 
 // Import new UI components
-import Navbar from '../layout/Navbar';
+import MobileLayout from '../layout/MobileLayout';
 import Card, { CardContent } from '../ui/Card';
 import Button from '../ui/Button';
 import { DashboardSkeleton } from '../ui/LoadingSkeleton';
@@ -131,26 +131,20 @@ const Dashboard = () => {
   // Show loading skeleton while data is loading (only for authenticated users)
   if (isLoading && isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div className="px-4 py-6 sm:px-0">
-            <DashboardSkeleton />
-          </div>
-        </main>
-      </div>
+      <MobileLayout>
+        <div className="px-4 py-6 sm:px-0">
+          <DashboardSkeleton />
+        </div>
+      </MobileLayout>
     );
   }
 
   // Public Dashboard View (when not authenticated)
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100">
-        <Navbar />
-
+      <MobileLayout hideBottomNav={true} className="bg-gradient-to-br from-primary-50 via-white to-primary-100">
         {/* Hero Section */}
-        <main className="max-w-7xl mx-auto py-12 sm:px-6 lg:px-8">
-          <div className="px-4 py-6 sm:px-0">
+        <div className="px-4 py-6 sm:px-0 max-w-7xl mx-auto py-12 sm:px-6 lg:px-8">
             {/* Welcome Hero */}
             <div className="text-center mb-16 animate-fade-in">
               <div className="mx-auto h-20 w-20 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
@@ -264,8 +258,7 @@ const Dashboard = () => {
                 Start Your Free Journey
               </Button>
             </div>
-          </div>
-        </main>
+        </div>
 
         {/* Login Prompt Modal */}
         <LoginPromptModal
@@ -273,18 +266,13 @@ const Dashboard = () => {
           onClose={closeLoginPrompt}
           feature={promptFeature}
         />
-      </div>
+      </MobileLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 animate-fade-in">
-      {/* Navigation */}
-      <Navbar />
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
+    <MobileLayout className="animate-fade-in">
+      <div className="px-4 py-6 sm:px-0">
           {/* Welcome Section */}
           <div className="mb-8 animate-slide-in-up">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
@@ -375,7 +363,7 @@ const Dashboard = () => {
           )}
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6 mb-6 md:mb-8">
             <div className="animate-slide-in-up" style={{ animationDelay: '0.1s' }}>
               <StatsCard
                 title="Current Streak"
@@ -422,7 +410,7 @@ const Dashboard = () => {
           </div>
 
           {/* Main Dashboard Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
             {/* Daily Check-in */}
             <div className="lg:col-span-2">
               <DailyCheckin
@@ -472,14 +460,13 @@ const Dashboard = () => {
           </div>
 
           {/* Progress Chart */}
-          <div className="mt-6 animate-slide-in-up" style={{ animationDelay: '0.3s' }}>
+          <div className="mt-4 md:mt-6 animate-slide-in-up" style={{ animationDelay: '0.3s' }}>
             <ProgressChart
               progressHistory={progressHistory}
               isLoading={false}
             />
           </div>
-        </div>
-      </main>
+      </div>
 
       {/* Login Prompt Modal */}
       <LoginPromptModal
@@ -487,7 +474,7 @@ const Dashboard = () => {
         onClose={closeLoginPrompt}
         feature={promptFeature}
       />
-    </div>
+    </MobileLayout>
   );
 };
 

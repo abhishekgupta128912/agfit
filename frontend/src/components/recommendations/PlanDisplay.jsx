@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
+import MobileLayout from '../layout/MobileLayout';
 import NutritionPlan from './NutritionPlan';
 import WorkoutPlan from './WorkoutPlan';
 import WellnessPlan from './WellnessPlan';
 
 const PlanDisplay = () => {
+  const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -85,12 +88,17 @@ const PlanDisplay = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">AI Health Recommendations</h1>
-        <p className="text-gray-600">Personalized plans powered by artificial intelligence</p>
-      </div>
+    <MobileLayout
+      title="AI Recommendations"
+      showBackButton={true}
+      onBack={() => navigate('/dashboard')}
+    >
+      <div className="max-w-6xl mx-auto p-4 md:p-6">
+        {/* Header */}
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">AI Health Recommendations</h1>
+          <p className="text-gray-600">Personalized plans powered by artificial intelligence</p>
+        </div>
 
       {/* Error Message */}
       {error && (
@@ -100,78 +108,94 @@ const PlanDisplay = () => {
       )}
 
       {/* Generate New Plans */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-        <h2 className="text-xl font-semibold mb-4">Generate New Plans</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="bg-white p-4 md:p-6 rounded-lg shadow-md mb-6 md:mb-8">
+        <h2 className="text-lg md:text-xl font-semibold mb-4">Generate New Plans</h2>
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           <button
             onClick={() => generatePlan('nutrition')}
             disabled={generatingType === 'nutrition'}
-            className="bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white px-4 py-3 rounded-lg font-medium transition-colors"
+            className="bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white px-3 md:px-4 py-3 md:py-3 rounded-lg font-medium transition-colors min-h-[48px] text-sm md:text-base"
           >
             {generatingType === 'nutrition' ? (
               <div className="flex items-center justify-center">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Generating...
+                <span className="hidden sm:inline">Generating...</span>
+                <span className="sm:hidden">...</span>
               </div>
             ) : (
-              '🥗 Nutrition Plan'
+              <>
+                <span className="hidden sm:inline">🥗 Nutrition Plan</span>
+                <span className="sm:hidden">🥗 Nutrition</span>
+              </>
             )}
           </button>
 
           <button
             onClick={() => generatePlan('workout')}
             disabled={generatingType === 'workout'}
-            className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white px-4 py-3 rounded-lg font-medium transition-colors"
+            className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white px-3 md:px-4 py-3 md:py-3 rounded-lg font-medium transition-colors min-h-[48px] text-sm md:text-base"
           >
             {generatingType === 'workout' ? (
               <div className="flex items-center justify-center">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Generating...
+                <span className="hidden sm:inline">Generating...</span>
+                <span className="sm:hidden">...</span>
               </div>
             ) : (
-              '💪 Workout Plan'
+              <>
+                <span className="hidden sm:inline">💪 Workout Plan</span>
+                <span className="sm:hidden">💪 Workout</span>
+              </>
             )}
           </button>
 
           <button
             onClick={() => generatePlan('wellness')}
             disabled={generatingType === 'wellness'}
-            className="bg-purple-500 hover:bg-purple-600 disabled:bg-purple-300 text-white px-4 py-3 rounded-lg font-medium transition-colors"
+            className="bg-purple-500 hover:bg-purple-600 disabled:bg-purple-300 text-white px-3 md:px-4 py-3 md:py-3 rounded-lg font-medium transition-colors min-h-[48px] text-sm md:text-base"
           >
             {generatingType === 'wellness' ? (
               <div className="flex items-center justify-center">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Generating...
+                <span className="hidden sm:inline">Generating...</span>
+                <span className="sm:hidden">...</span>
               </div>
             ) : (
-              '🧘 Wellness Plan'
+              <>
+                <span className="hidden sm:inline">🧘 Wellness Plan</span>
+                <span className="sm:hidden">🧘 Wellness</span>
+              </>
             )}
           </button>
 
           <button
             onClick={() => generatePlan('comprehensive')}
             disabled={generatingType === 'comprehensive'}
-            className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-blue-300 disabled:to-purple-300 text-white px-4 py-3 rounded-lg font-medium transition-colors"
+            className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 disabled:from-blue-300 disabled:to-purple-300 text-white px-3 md:px-4 py-3 md:py-3 rounded-lg font-medium transition-colors min-h-[48px] text-sm md:text-base col-span-2 lg:col-span-1"
           >
             {generatingType === 'comprehensive' ? (
               <div className="flex items-center justify-center">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Generating...
+                <span className="hidden sm:inline">Generating...</span>
+                <span className="sm:hidden">...</span>
               </div>
             ) : (
-              '🎯 Complete Plan'
+              <>
+                <span className="hidden sm:inline">🎯 Complete Plan</span>
+                <span className="sm:hidden">🎯 Complete</span>
+              </>
             )}
           </button>
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg">
+      <div className="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg overflow-x-auto">
         {['all', 'nutrition', 'workout', 'wellness', 'comprehensive'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-md font-medium transition-colors ${
+            className={`px-3 md:px-4 py-2.5 md:py-2 rounded-md font-medium transition-colors whitespace-nowrap min-h-[44px] text-sm md:text-base ${
               activeTab === tab
                 ? 'bg-white text-blue-600 shadow-sm'
                 : 'text-gray-600 hover:text-gray-900'
@@ -199,7 +223,8 @@ const PlanDisplay = () => {
           {filteredRecommendations.map(renderRecommendation)}
         </div>
       )}
-    </div>
+      </div>
+    </MobileLayout>
   );
 };
 

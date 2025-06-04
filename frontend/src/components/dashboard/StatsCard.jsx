@@ -68,27 +68,27 @@ const StatsCard = ({
   }
 
   return (
-    <div className="card hover:shadow-md transition-shadow duration-200">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          <div className={`p-2 ${colorClasses[color].bg} rounded-lg`}>
-            <Icon className={`h-6 w-6 ${colorClasses[color].icon}`} />
+    <div className="card hover:shadow-md transition-shadow duration-200 min-h-[100px] md:min-h-[120px]">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between h-full">
+        <div className="flex items-center mb-2 md:mb-0">
+          <div className={`p-2 md:p-3 ${colorClasses[color].bg} rounded-lg`}>
+            <Icon className={`h-5 w-5 md:h-6 md:w-6 ${colorClasses[color].icon}`} />
           </div>
-          <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600">{title}</p>
+          <div className="ml-3 md:ml-4">
+            <p className="text-xs md:text-sm font-medium text-gray-600 leading-tight">{title}</p>
             <div className="flex items-baseline">
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-xl md:text-2xl font-bold text-gray-900">
                 {value}
-                {unit && <span className="text-lg text-gray-500 ml-1">{unit}</span>}
+                {unit && <span className="text-sm md:text-lg text-gray-500 ml-1">{unit}</span>}
               </p>
             </div>
           </div>
         </div>
-        
+
         {trend && trendValue && (
-          <div className="flex items-center space-x-1">
+          <div className="flex items-center space-x-1 self-start md:self-center">
             {getTrendIcon()}
-            <span className={`text-sm font-medium ${getTrendColor()}`}>
+            <span className={`text-xs md:text-sm font-medium ${getTrendColor()}`}>
               {trendValue}
             </span>
           </div>

@@ -94,7 +94,7 @@ const DailyCheckin = ({ progress, onUpdate, isLoading }) => {
   }
 
   return (
-    <div className="card animate-slide-in-up" style={{ animationDelay: '0.1s' }}>
+    <div className="card animate-slide-in-up" style={{ animationDelay: '0.1s' }} data-daily-checkin>
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
         Daily Check-in
       </h3>
@@ -107,14 +107,15 @@ const DailyCheckin = ({ progress, onUpdate, isLoading }) => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+              className={`flex-1 flex items-center justify-center space-x-1 md:space-x-2 py-2.5 md:py-2 px-2 md:px-3 rounded-md text-xs md:text-sm font-medium transition-colors min-h-[44px] ${
                 activeTab === tab.id
                   ? 'bg-white text-primary-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               <Icon className="h-4 w-4" />
-              <span>{tab.label}</span>
+              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
             </button>
           );
         })}
@@ -124,7 +125,7 @@ const DailyCheckin = ({ progress, onUpdate, isLoading }) => {
       {activeTab === 'nutrition' && (
         <div className="space-y-4">
           {/* Water Intake */}
-          <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+          <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
             <div className="flex items-center space-x-3">
               <Droplets className="h-5 w-5 text-blue-600" />
               <div>
@@ -134,8 +135,8 @@ const DailyCheckin = ({ progress, onUpdate, isLoading }) => {
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-16 bg-blue-200 rounded-full h-2">
+            <div className="flex items-center space-x-3">
+              <div className="w-16 md:w-20 bg-blue-200 rounded-full h-2">
                 <div
                   className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${waterPercentage}%` }}
@@ -143,43 +144,47 @@ const DailyCheckin = ({ progress, onUpdate, isLoading }) => {
               </div>
               <button
                 onClick={handleAddWater}
-                className="p-1 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+                className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-5 w-5" />
               </button>
             </div>
           </div>
 
           {/* Meals */}
           <div>
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-3">
               <p className="text-sm font-medium text-gray-900">Today's Meals</p>
               <Button
                 variant="ghost"
-                size="sm"
+                size="md"
                 icon={Plus}
                 onClick={() => setShowMealForm(true)}
+                className="min-h-[44px]"
               >
-                Add Meal
+                <span className="hidden sm:inline">Add Meal</span>
+                <span className="sm:hidden">Add</span>
               </Button>
             </div>
             
             <div className="space-y-2">
               {progress?.nutrition?.meals?.length > 0 ? (
                 progress.nutrition.meals.map((meal, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                    <div className="flex items-center space-x-2">
+                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg min-h-[52px]">
+                    <div className="flex items-center space-x-3">
                       <Coffee className="h-4 w-4 text-gray-600" />
-                      <span className="text-sm capitalize">{meal.name}</span>
-                      <span className="text-xs text-gray-500">
-                        {meal.calories} cal
-                      </span>
+                      <div>
+                        <span className="text-sm capitalize font-medium">{meal.name}</span>
+                        <div className="text-xs text-gray-500">
+                          {meal.calories} cal
+                        </div>
+                      </div>
                     </div>
-                    <Check className="h-4 w-4 text-green-600" />
+                    <Check className="h-5 w-5 text-green-600" />
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-gray-500 text-center py-4">
+                <p className="text-sm text-gray-500 text-center py-6">
                   No meals logged today
                 </p>
               )}

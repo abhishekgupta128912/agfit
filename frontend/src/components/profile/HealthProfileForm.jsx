@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { profileAPI } from '../../utils/api';
 import { ChevronLeft, ChevronRight, Check, User, Target, Activity, Utensils, Heart, Moon } from 'lucide-react';
+import MobileLayout from '../layout/MobileLayout';
 
 // Import step components
 import PersonalInfoStep from './steps/PersonalInfoStep';
@@ -197,11 +198,16 @@ const HealthProfileForm = () => {
   const currentStepErrors = errors[steps[currentStep].id] || {};
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+    <MobileLayout
+      title="Health Profile"
+      showBackButton={true}
+      onBack={() => navigate('/dashboard')}
+      className="bg-gradient-to-br from-primary-50 to-primary-100"
+    >
+      <div className="max-w-4xl mx-auto py-6 md:py-8 px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="text-center mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
             Complete Your Health Profile
           </h1>
           <p className="text-gray-600">
@@ -210,27 +216,28 @@ const HealthProfileForm = () => {
         </div>
 
         {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
+        <div className="mb-6 md:mb-8">
+          <div className="flex items-center justify-between mb-4 overflow-x-auto">
             {steps.map((step, index) => {
               const Icon = step.icon;
               const isCompleted = index < currentStep;
               const isCurrent = index === currentStep;
-              
+
               return (
-                <div key={step.id} className="flex flex-col items-center">
+                <div key={step.id} className="flex flex-col items-center min-w-0 flex-1">
                   <div className={`
-                    w-12 h-12 rounded-full flex items-center justify-center mb-2 transition-colors
-                    ${isCompleted ? 'bg-green-500 text-white' : 
-                      isCurrent ? 'bg-primary-600 text-white' : 
+                    w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center mb-1 md:mb-2 transition-colors
+                    ${isCompleted ? 'bg-green-500 text-white' :
+                      isCurrent ? 'bg-primary-600 text-white' :
                       'bg-gray-200 text-gray-400'}
                   `}>
-                    {isCompleted ? <Check className="h-6 w-6" /> : <Icon className="h-6 w-6" />}
+                    {isCompleted ? <Check className="h-4 w-4 md:h-6 md:w-6" /> : <Icon className="h-4 w-4 md:h-6 md:w-6" />}
                   </div>
-                  <span className={`text-xs text-center max-w-20 ${
+                  <span className={`text-xs text-center leading-tight ${
                     isCurrent ? 'text-primary-600 font-medium' : 'text-gray-500'
                   }`}>
-                    {step.title}
+                    <span className="hidden sm:inline">{step.title}</span>
+                    <span className="sm:hidden">{step.title.split(' ')[0]}</span>
                   </span>
                 </div>
               );
@@ -263,18 +270,18 @@ const HealthProfileForm = () => {
           />
 
           {/* Navigation Buttons */}
-          <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
+          <div className="flex flex-col sm:flex-row justify-between items-center mt-6 md:mt-8 pt-4 md:pt-6 border-t border-gray-200 space-y-3 sm:space-y-0">
             <button
               type="button"
               onClick={prevStep}
               disabled={currentStep === 0}
-              className="btn-secondary flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-secondary flex items-center disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] w-full sm:w-auto"
             >
               <ChevronLeft className="h-4 w-4 mr-1" />
               Previous
             </button>
 
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-gray-500 order-first sm:order-none">
               Step {currentStep + 1} of {steps.length}
             </span>
 
@@ -282,7 +289,7 @@ const HealthProfileForm = () => {
               type="button"
               onClick={nextStep}
               disabled={isLoading}
-              className="btn-primary flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary flex items-center disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] w-full sm:w-auto"
             >
               {currentStep === steps.length - 1 ? (
                 isLoading ? 'Saving...' : 'Complete Profile'
@@ -303,7 +310,7 @@ const HealthProfileForm = () => {
           )}
         </div>
       </div>
-    </div>
+    </MobileLayout>
   );
 };
 
