@@ -1,15 +1,30 @@
 const OpenAI = require('openai');
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Initialize OpenAI client with error handling
+let openai = null;
+let openaiAvailable = false;
+
+try {
+  if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your-openai-api-key-here') {
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+    openaiAvailable = true;
+    console.log('✅ OpenAI API initialized successfully');
+  } else {
+    console.log('⚠️  OpenAI API key not configured - using demo mode');
+  }
+} catch (error) {
+  console.error('❌ Failed to initialize OpenAI:', error.message);
+  openaiAvailable = false;
+}
 
 class AIService {
   constructor() {
     this.model = 'gpt-3.5-turbo';
-    this.maxTokens = 300; // Further reduced to save more credits
+    this.maxTokens = 300;
     this.temperature = 0.7;
+    this.demoMode = !openaiAvailable;
   }
 
   /**
@@ -17,6 +32,11 @@ class AIService {
    */
   async generateNutritionPlan(profile) {
     try {
+      // If OpenAI is not available, return demo data
+      if (this.demoMode) {
+        return this.getDemoNutritionPlan(profile);
+      }
+
       const prompt = this.buildNutritionPrompt(profile);
 
       const completion = await openai.chat.completions.create({
@@ -38,7 +58,9 @@ class AIService {
       return this.parseNutritionResponse(completion.choices[0].message.content);
     } catch (error) {
       console.error('Error generating nutrition plan:', error);
-      throw new Error('Failed to generate nutrition plan');
+      // Fallback to demo data if API fails
+      console.log('🔄 Falling back to demo nutrition plan');
+      return this.getDemoNutritionPlan(profile);
     }
   }
 
@@ -47,6 +69,11 @@ class AIService {
    */
   async generateWorkoutPlan(profile) {
     try {
+      // If OpenAI is not available, return demo data
+      if (this.demoMode) {
+        return this.getDemoWorkoutPlan(profile);
+      }
+
       const prompt = this.buildWorkoutPrompt(profile);
 
       const completion = await openai.chat.completions.create({
@@ -68,7 +95,9 @@ class AIService {
       return this.parseWorkoutResponse(completion.choices[0].message.content);
     } catch (error) {
       console.error('Error generating workout plan:', error);
-      throw new Error('Failed to generate workout plan');
+      // Fallback to demo data if API fails
+      console.log('🔄 Falling back to demo workout plan');
+      return this.getDemoWorkoutPlan(profile);
     }
   }
 
@@ -77,6 +106,11 @@ class AIService {
    */
   async generateWellnessPlan(profile) {
     try {
+      // If OpenAI is not available, return demo data
+      if (this.demoMode) {
+        return this.getDemoWellnessPlan(profile);
+      }
+
       const prompt = this.buildWellnessPrompt(profile);
 
       const completion = await openai.chat.completions.create({
@@ -98,7 +132,9 @@ class AIService {
       return this.parseWellnessResponse(completion.choices[0].message.content);
     } catch (error) {
       console.error('Error generating wellness plan:', error);
-      throw new Error('Failed to generate wellness plan');
+      // Fallback to demo data if API fails
+      console.log('🔄 Falling back to demo wellness plan');
+      return this.getDemoWellnessPlan(profile);
     }
   }
 
@@ -287,6 +323,179 @@ Format the response as structured JSON with actionable daily and weekly practice
       console.error('Error generating comprehensive plan:', error);
       throw new Error('Failed to generate comprehensive health plan');
     }
+  }
+
+  /**
+   * Demo nutrition plan for when OpenAI is not available
+   */
+  getDemoNutritionPlan(profile) {
+    const { personalInfo, healthGoals } = profile;
+    const baseCalories = personalInfo.gender === 'male' ? 2200 : 1800;
+
+    return {
+      type: 'nutrition',
+      structured: true,
+      generatedAt: new Date(),
+      demoMode: true,
+      content: {
+        dailyCalories: baseCalories,
+        macronutrients: {
+          protein: '25%',
+          carbohydrates: '45%',
+          fats: '30%'
+        },
+        mealPlan: {
+          breakfast: {
+            foods: ['Oatmeal with berries', 'Greek yogurt', 'Almonds'],
+            calories: Math.round(baseCalories * 0.25)
+          },
+          lunch: {
+            foods: ['Grilled chicken salad', 'Quinoa', 'Avocado'],
+            calories: Math.round(baseCalories * 0.35)
+          },
+          dinner: {
+            foods: ['Salmon', 'Sweet potato', 'Steamed broccoli'],
+            calories: Math.round(baseCalories * 0.30)
+          },
+          snacks: {
+            foods: ['Apple with peanut butter', 'Protein smoothie'],
+            calories: Math.round(baseCalories * 0.10)
+          }
+        },
+        hydration: '8-10 glasses of water daily',
+        supplements: ['Multivitamin', 'Omega-3', 'Vitamin D'],
+        notes: [
+          'This is a demo nutrition plan.',
+          'Please consult with a registered dietitian for personalized advice.',
+          'Adjust portions based on your activity level and goals.'
+        ]
+      }
+    };
+  }
+
+  /**
+   * Demo workout plan for when OpenAI is not available
+   */
+  getDemoWorkoutPlan(profile) {
+    const { personalInfo, healthGoals } = profile;
+
+    return {
+      type: 'workout',
+      structured: true,
+      generatedAt: new Date(),
+      demoMode: true,
+      content: {
+        weeklySchedule: '3-4 days per week',
+        workoutDuration: '45-60 minutes',
+        workouts: {
+          day1: {
+            name: 'Upper Body Strength',
+            exercises: [
+              { name: 'Push-ups', sets: 3, reps: '10-15', rest: '60s' },
+              { name: 'Dumbbell rows', sets: 3, reps: '12-15', rest: '60s' },
+              { name: 'Shoulder press', sets: 3, reps: '10-12', rest: '60s' },
+              { name: 'Plank', sets: 3, duration: '30-60s', rest: '60s' }
+            ]
+          },
+          day2: {
+            name: 'Lower Body & Core',
+            exercises: [
+              { name: 'Squats', sets: 3, reps: '12-15', rest: '60s' },
+              { name: 'Lunges', sets: 3, reps: '10 each leg', rest: '60s' },
+              { name: 'Glute bridges', sets: 3, reps: '15-20', rest: '60s' },
+              { name: 'Dead bug', sets: 3, reps: '10 each side', rest: '60s' }
+            ]
+          },
+          day3: {
+            name: 'Cardio & Flexibility',
+            exercises: [
+              { name: 'Brisk walking', duration: '20-30 minutes' },
+              { name: 'Dynamic stretching', duration: '10 minutes' },
+              { name: 'Yoga flow', duration: '15 minutes' }
+            ]
+          }
+        },
+        progression: 'Increase reps or weight by 5-10% weekly',
+        safety: [
+          'This is a demo workout plan.',
+          'Warm up for 5-10 minutes before exercising.',
+          'Cool down and stretch after workouts.',
+          'Listen to your body and rest when needed.',
+          'Consult a fitness professional for personalized guidance.'
+        ]
+      }
+    };
+  }
+
+  /**
+   * Demo wellness plan for when OpenAI is not available
+   */
+  getDemoWellnessPlan(profile) {
+    const { personalInfo, lifestyle } = profile;
+
+    return {
+      type: 'wellness',
+      structured: true,
+      generatedAt: new Date(),
+      demoMode: true,
+      content: {
+        sleepOptimization: {
+          targetHours: '7-9 hours',
+          tips: [
+            'Maintain consistent sleep schedule',
+            'Create a relaxing bedtime routine',
+            'Limit screen time before bed',
+            'Keep bedroom cool and dark'
+          ]
+        },
+        stressManagement: {
+          techniques: [
+            'Deep breathing exercises (5 minutes daily)',
+            'Progressive muscle relaxation',
+            'Mindfulness meditation (10-15 minutes)',
+            'Regular physical activity'
+          ]
+        },
+        mentalHealth: {
+          practices: [
+            'Gratitude journaling (3 things daily)',
+            'Social connections with friends/family',
+            'Hobby engagement',
+            'Professional support when needed'
+          ]
+        },
+        mindfulness: {
+          dailyPractices: [
+            'Morning intention setting (2 minutes)',
+            'Mindful eating during one meal',
+            'Evening reflection (5 minutes)',
+            'Body scan meditation'
+          ]
+        },
+        workLifeBalance: {
+          strategies: [
+            'Set clear work boundaries',
+            'Take regular breaks',
+            'Prioritize important tasks',
+            'Schedule personal time'
+          ]
+        },
+        habitFormation: {
+          tips: [
+            'Start with small, achievable goals',
+            'Use habit stacking',
+            'Track progress visually',
+            'Celebrate small wins'
+          ]
+        },
+        notes: [
+          'This is a demo wellness plan.',
+          'Mental health is just as important as physical health.',
+          'Consider professional counseling if experiencing persistent stress or anxiety.',
+          'Adjust recommendations based on your personal needs and circumstances.'
+        ]
+      }
+    };
   }
 }
 
