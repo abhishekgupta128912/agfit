@@ -1,6 +1,6 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const app = require('../server');
+const { app, initializeTestServer } = require('./testServer');
 
 // Integration tests that test actual API endpoints
 describe('API Integration Tests', () => {
@@ -15,8 +15,9 @@ describe('API Integration Tests', () => {
   };
 
   beforeAll(async () => {
-    // Wait for database connection
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Initialize test server and database
+    await initializeTestServer();
+    await new Promise(resolve => setTimeout(resolve, 1000));
   });
 
   afterAll(async () => {
@@ -28,6 +29,11 @@ describe('API Integration Tests', () => {
       } catch (error) {
         console.log('Cleanup error:', error.message);
       }
+    }
+
+    // Close database connection
+    if (mongoose.connection.readyState === 1) {
+      await mongoose.connection.close();
     }
   });
 
@@ -105,8 +111,8 @@ describe('API Integration Tests', () => {
 
       if (response.status === 200) {
         expect(response.body.success).toBe(true);
-        expect(response.body.data.email).toBe(testUser.email);
-        expect(response.body.data.password).toBeUndefined();
+        expect(response.body.data.user.email).toBe(testUser.email);
+        expect(response.body.data.user.password).toBeUndefined();
       }
     });
 
