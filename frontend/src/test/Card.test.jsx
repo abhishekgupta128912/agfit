@@ -32,10 +32,10 @@ describe('Card Component', () => {
 
   it('applies different padding sizes', () => {
     const { rerender } = render(<Card padding="sm" data-testid="card">Content</Card>)
-    expect(screen.getByTestId('card')).toHaveClass('p-4')
+    expect(screen.getByTestId('card')).toHaveClass('p-3', 'md:p-4')
 
     rerender(<Card padding="lg" data-testid="card">Content</Card>)
-    expect(screen.getByTestId('card')).toHaveClass('p-8')
+    expect(screen.getByTestId('card')).toHaveClass('p-5', 'md:p-8')
   })
 })
 
