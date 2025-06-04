@@ -27,14 +27,20 @@ const generateNutritionPlan = async (req, res) => {
     const recommendation = new Recommendation({
       userId,
       type: 'nutrition',
+      title: nutritionPlan.demoMode ?
+        'Demo Nutrition Plan - Personalized Meal Guide' :
+        'AI-Generated Nutrition Plan',
       content: {
         structured: nutritionPlan.structured || false,
         rawContent: typeof nutritionPlan === 'string' ? nutritionPlan : JSON.stringify(nutritionPlan),
-        parsedData: nutritionPlan.structured ? nutritionPlan : null
+        parsedData: nutritionPlan.structured ? nutritionPlan : null,
+        summary: nutritionPlan.demoMode ?
+          'Demo nutrition plan with personalized calorie targets and meal suggestions.' :
+          'AI-generated personalized nutrition recommendations.'
       },
       metadata: {
         generationTime,
-        aiModel: 'gpt-3.5-turbo',
+        aiModel: nutritionPlan.demoMode ? 'demo-mode' : 'gpt-3.5-turbo',
         promptVersion: '1.0'
       },
       profileSnapshot: {
@@ -97,14 +103,20 @@ const generateWorkoutPlan = async (req, res) => {
     const recommendation = new Recommendation({
       userId,
       type: 'workout',
+      title: workoutPlan.demoMode ?
+        'Demo Workout Plan - Personalized Exercise Routine' :
+        'AI-Generated Workout Plan',
       content: {
         structured: workoutPlan.structured || false,
         rawContent: typeof workoutPlan === 'string' ? workoutPlan : JSON.stringify(workoutPlan),
-        parsedData: workoutPlan.structured ? workoutPlan : null
+        parsedData: workoutPlan.structured ? workoutPlan : null,
+        summary: workoutPlan.demoMode ?
+          'Demo workout plan with progressive exercises and safety guidelines.' :
+          'AI-generated personalized workout recommendations.'
       },
       metadata: {
         generationTime,
-        aiModel: 'gpt-3.5-turbo',
+        aiModel: workoutPlan.demoMode ? 'demo-mode' : 'gpt-3.5-turbo',
         promptVersion: '1.0'
       },
       profileSnapshot: {
@@ -167,14 +179,20 @@ const generateWellnessPlan = async (req, res) => {
     const recommendation = new Recommendation({
       userId,
       type: 'wellness',
+      title: wellnessPlan.demoMode ?
+        'Demo Wellness Plan - Holistic Health Guide' :
+        'AI-Generated Wellness Plan',
       content: {
         structured: wellnessPlan.structured || false,
         rawContent: typeof wellnessPlan === 'string' ? wellnessPlan : JSON.stringify(wellnessPlan),
-        parsedData: wellnessPlan.structured ? wellnessPlan : null
+        parsedData: wellnessPlan.structured ? wellnessPlan : null,
+        summary: wellnessPlan.demoMode ?
+          'Demo wellness plan with mental health, stress management, and lifestyle recommendations.' :
+          'AI-generated personalized wellness recommendations.'
       },
       metadata: {
         generationTime,
-        aiModel: 'gpt-3.5-turbo',
+        aiModel: wellnessPlan.demoMode ? 'demo-mode' : 'gpt-3.5-turbo',
         promptVersion: '1.0'
       },
       profileSnapshot: {
@@ -234,20 +252,30 @@ const generateComprehensivePlan = async (req, res) => {
     const generationTime = Date.now() - startTime;
 
     // Save comprehensive recommendation
+    const isDemoMode = comprehensivePlan.nutrition?.demoMode ||
+                      comprehensivePlan.workout?.demoMode ||
+                      comprehensivePlan.wellness?.demoMode;
+
     const recommendation = new Recommendation({
       userId,
       type: 'comprehensive',
+      title: isDemoMode ?
+        'Demo Complete Health Plan - Comprehensive Wellness Guide' :
+        'AI-Generated Complete Health Plan',
       content: {
         structured: true,
         rawContent: JSON.stringify(comprehensivePlan),
-        parsedData: comprehensivePlan
+        parsedData: comprehensivePlan,
+        summary: isDemoMode ?
+          'Demo comprehensive health plan including nutrition, workout, and wellness recommendations.' :
+          'AI-generated complete health plan with personalized recommendations.'
       },
       nutrition: comprehensivePlan.nutrition?.nutrition || {},
       workout: comprehensivePlan.workout?.workout || {},
       wellness: comprehensivePlan.wellness?.wellness || {},
       metadata: {
         generationTime,
-        aiModel: 'gpt-3.5-turbo',
+        aiModel: isDemoMode ? 'demo-mode' : 'gpt-3.5-turbo',
         promptVersion: '1.0'
       },
       profileSnapshot: comprehensivePlan.profileSnapshot
