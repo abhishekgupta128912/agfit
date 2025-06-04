@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Eye, EyeOff, Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2, TrendingUp } from 'lucide-react';
+import MobileLayout from '../layout/MobileLayout';
+import Input from '../ui/Input';
+import Button from '../ui/Button';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -76,145 +79,100 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-primary-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full">
-        {/* Logo and Header */}
-        <div className="text-center mb-8">
-          <div className="mx-auto h-16 w-16 bg-primary-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
-            <span className="text-2xl font-bold text-white">AF</span>
-          </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome back to AgFit
-          </h2>
-          <p className="text-gray-600">
-            Sign in to your account to continue your health journey
-          </p>
-        </div>
-
-        {/* Login Card */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            {/* Email Field */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email Address
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`input-field pl-10 ${validationErrors.email ? 'border-red-500 focus:ring-red-500' : ''}`}
-                  placeholder="Enter your email"
-                />
-              </div>
-              {validationErrors.email && (
-                <p className="mt-1 text-sm text-red-600 flex items-center">
-                  <AlertCircle className="h-4 w-4 mr-1" />
-                  {validationErrors.email}
-                </p>
-              )}
+    <MobileLayout hideBottomNav={true} className="bg-gradient-to-br from-primary-50 via-white to-primary-100">
+      <div className="min-h-screen flex items-center justify-center py-8 md:py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full">
+          {/* Logo and Header */}
+          <div className="text-center mb-6 md:mb-8">
+            <div className="mx-auto h-16 w-16 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
+              <TrendingUp className="h-8 w-8 text-white" />
             </div>
-
-            {/* Password Field */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={`input-field pl-10 pr-10 ${validationErrors.password ? 'border-red-500 focus:ring-red-500' : ''}`}
-                  placeholder="Enter your password"
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                  )}
-                </button>
-              </div>
-              {validationErrors.password && (
-                <p className="mt-1 text-sm text-red-600 flex items-center">
-                  <AlertCircle className="h-4 w-4 mr-1" />
-                  {validationErrors.password}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Server Error */}
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-              <p className="text-sm text-red-600 flex items-center">
-                <AlertCircle className="h-4 w-4 mr-2" />
-                {error}
-              </p>
-            </div>
-          )}
-
-          {/* Submit Button */}
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="btn-primary w-full flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="animate-spin h-4 w-4 mr-2" />
-                  Signing in...
-                </>
-              ) : (
-                'Sign in'
-              )}
-            </button>
-          </div>
-
-          {/* Register Link */}
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
-              <Link
-                to="/register"
-                className="font-medium text-primary-600 hover:text-primary-500 transition-colors"
-              >
-                Sign up here
-              </Link>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              Welcome back to AgFit
+            </h2>
+            <p className="text-gray-600">
+              Sign in to your account to continue your health journey
             </p>
           </div>
-        </form>
-        </div>
 
-        {/* Footer */}
-        <div className="text-center mt-8">
-          <p className="text-xs text-gray-500">
-            By signing in, you agree to our Terms of Service and Privacy Policy
-          </p>
+          {/* Login Card */}
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 md:p-8">
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {/* Email Field */}
+              <Input
+                label="Email Address"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                error={validationErrors.email}
+                autoComplete="email"
+                size="lg"
+              />
+
+              {/* Password Field */}
+              <Input
+                label="Password"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                error={validationErrors.password}
+                autoComplete="current-password"
+                showPasswordToggle={true}
+                size="lg"
+              />
+
+              {/* Server Error */}
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <p className="text-sm text-red-600 flex items-center">
+                    <AlertCircle className="h-4 w-4 mr-2" />
+                    {error}
+                  </p>
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                fullWidth
+                isLoading={isLoading}
+                disabled={isLoading}
+                icon={isLoading ? Loader2 : null}
+                className="mt-6"
+              >
+                {isLoading ? 'Signing in...' : 'Sign in'}
+              </Button>
+
+              {/* Register Link */}
+              <div className="text-center mt-6">
+                <p className="text-sm text-gray-600">
+                  Don't have an account?{' '}
+                  <Link
+                    to="/register"
+                    className="font-medium text-primary-600 hover:text-primary-500 transition-colors"
+                  >
+                    Sign up here
+                  </Link>
+                </p>
+              </div>
+            </form>
+          </div>
+
+          {/* Footer */}
+          <div className="text-center mt-6 md:mt-8">
+            <p className="text-xs text-gray-500">
+              By signing in, you agree to our Terms of Service and Privacy Policy
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </MobileLayout>
   );
 };
 
