@@ -4,7 +4,7 @@ import { AlertCircle, CheckCircle, ArrowLeft, TrendingUp } from 'lucide-react';
 import MobileLayout from '../layout/MobileLayout';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
-import { api } from '../../utils/api';
+import { authAPI } from '../../utils/api';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -30,12 +30,12 @@ const ForgotPassword = () => {
     setError('');
 
     try {
-      const response = await api.post('/auth/forgot-password', { email });
+      const response = await authAPI.forgotPassword(email);
 
-      if (response.data.success) {
+      if (response.success) {
         setIsSuccess(true);
       } else {
-        setError(response.data.message || 'Failed to send reset email. Please try again.');
+        setError(response.message || 'Failed to send reset email. Please try again.');
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to send reset email. Please try again.');
