@@ -15,7 +15,7 @@
    NODE_ENV=production
    MONGODB_URI=mongodb+srv://guptaa1289:ABHI1289%40agfit@agfit.cn0ofra.mongodb.net/agfit?retryWrites=true&w=majority
    JWT_SECRET=agfit_super_secret_jwt_key_for_health_wellness_platform_2024_secure
-   OPENAI_API_KEY=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
+   OPENAI_API_KEY=your-openai-api-key-here
    FRONTEND_URL=https://yourusername.github.io
    ```
 
