@@ -1,14 +1,11 @@
 import React from 'react';
 import { TrendingUp, Calendar, Target } from 'lucide-react';
+import Card from '../ui/Card';
+import { CardSkeleton } from '../ui/LoadingSkeleton';
 
 const ProgressChart = ({ progressHistory, isLoading }) => {
   if (isLoading) {
-    return (
-      <div className="card animate-pulse">
-        <div className="h-6 bg-gray-300 rounded w-32 mb-4"></div>
-        <div className="h-40 bg-gray-300 rounded"></div>
-      </div>
-    );
+    return <CardSkeleton showTitle showDescription />;
   }
 
   if (!progressHistory || progressHistory.length === 0) {
@@ -35,7 +32,7 @@ const ProgressChart = ({ progressHistory, isLoading }) => {
   const chartHeight = 120;
 
   return (
-    <div className="card">
+    <div className="card hover-lift">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-gray-900">
           Progress Overview

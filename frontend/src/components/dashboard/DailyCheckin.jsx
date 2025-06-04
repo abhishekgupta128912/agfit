@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { 
-  Plus, 
-  Check, 
-  Coffee, 
-  Utensils, 
-  Droplets, 
+import {
+  Plus,
+  Check,
+  Coffee,
+  Utensils,
+  Droplets,
   Dumbbell,
   Moon,
-  Heart,
-  X
+  Heart
 } from 'lucide-react';
+import Modal from '../ui/Modal';
+import Button from '../ui/Button';
+import Input, { Select } from '../ui/Input';
+import Card from '../ui/Card';
 
 const DailyCheckin = ({ progress, onUpdate, isLoading }) => {
   const [activeTab, setActiveTab] = useState('nutrition');
@@ -91,7 +94,7 @@ const DailyCheckin = ({ progress, onUpdate, isLoading }) => {
   }
 
   return (
-    <div className="card">
+    <div className="card animate-slide-in-up" style={{ animationDelay: '0.1s' }}>
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
         Daily Check-in
       </h3>
@@ -151,13 +154,14 @@ const DailyCheckin = ({ progress, onUpdate, isLoading }) => {
           <div>
             <div className="flex items-center justify-between mb-2">
               <p className="text-sm font-medium text-gray-900">Today's Meals</p>
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
+                icon={Plus}
                 onClick={() => setShowMealForm(true)}
-                className="text-sm text-primary-600 hover:text-primary-700 flex items-center space-x-1"
               >
-                <Plus className="h-4 w-4" />
-                <span>Add Meal</span>
-              </button>
+                Add Meal
+              </Button>
             </div>
             
             <div className="space-y-2">
@@ -183,81 +187,60 @@ const DailyCheckin = ({ progress, onUpdate, isLoading }) => {
           </div>
 
           {/* Meal Form Modal */}
-          {showMealForm && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-lg font-semibold">Log Meal</h4>
-                  <button
-                    onClick={() => setShowMealForm(false)}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                </div>
-                
-                <form onSubmit={handleLogMeal} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Meal Type
-                    </label>
-                    <select
-                      value={mealForm.name}
-                      onChange={(e) => setMealForm({ ...mealForm, name: e.target.value })}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                    >
-                      <option value="breakfast">Breakfast</option>
-                      <option value="lunch">Lunch</option>
-                      <option value="dinner">Dinner</option>
-                      <option value="snack">Snack</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Foods (comma separated)
-                    </label>
-                    <input
-                      type="text"
-                      value={mealForm.foods}
-                      onChange={(e) => setMealForm({ ...mealForm, foods: e.target.value })}
-                      placeholder="e.g., Oatmeal, Banana, Almonds"
-                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Calories (optional)
-                    </label>
-                    <input
-                      type="number"
-                      value={mealForm.calories}
-                      onChange={(e) => setMealForm({ ...mealForm, calories: e.target.value })}
-                      placeholder="e.g., 350"
-                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                    />
-                  </div>
-                  
-                  <div className="flex space-x-3">
-                    <button
-                      type="button"
-                      onClick={() => setShowMealForm(false)}
-                      className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="flex-1 py-2 px-4 bg-primary-600 text-white rounded-md hover:bg-primary-700"
-                    >
-                      Log Meal
-                    </button>
-                  </div>
-                </form>
+          <Modal
+            isOpen={showMealForm}
+            onClose={() => setShowMealForm(false)}
+            title="Log Meal"
+            size="md"
+          >
+            <form onSubmit={handleLogMeal} className="space-y-4">
+              <Select
+                label="Meal Type"
+                value={mealForm.name}
+                onChange={(e) => setMealForm({ ...mealForm, name: e.target.value })}
+                options={[
+                  { value: 'breakfast', label: 'Breakfast' },
+                  { value: 'lunch', label: 'Lunch' },
+                  { value: 'dinner', label: 'Dinner' },
+                  { value: 'snack', label: 'Snack' }
+                ]}
+              />
+
+              <Input
+                label="Foods (comma separated)"
+                type="text"
+                value={mealForm.foods}
+                onChange={(e) => setMealForm({ ...mealForm, foods: e.target.value })}
+                placeholder="e.g., Oatmeal, Banana, Almonds"
+              />
+
+              <Input
+                label="Calories (optional)"
+                type="number"
+                value={mealForm.calories}
+                onChange={(e) => setMealForm({ ...mealForm, calories: e.target.value })}
+                placeholder="e.g., 350"
+              />
+
+              <div className="flex space-x-3 pt-4">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setShowMealForm(false)}
+                  fullWidth
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  fullWidth
+                >
+                  Log Meal
+                </Button>
               </div>
-            </div>
-          )}
+            </form>
+          </Modal>
         </div>
       )}
 
@@ -266,13 +249,14 @@ const DailyCheckin = ({ progress, onUpdate, isLoading }) => {
         <div className="space-y-4">
           <div className="flex items-center justify-between mb-2">
             <p className="text-sm font-medium text-gray-900">Today's Exercises</p>
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
+              icon={Plus}
               onClick={() => setShowExerciseForm(true)}
-              className="text-sm text-primary-600 hover:text-primary-700 flex items-center space-x-1"
             >
-              <Plus className="h-4 w-4" />
-              <span>Add Exercise</span>
-            </button>
+              Add Exercise
+            </Button>
           </div>
           
           <div className="space-y-2">
@@ -297,79 +281,62 @@ const DailyCheckin = ({ progress, onUpdate, isLoading }) => {
           </div>
 
           {/* Exercise Form Modal */}
-          {showExerciseForm && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-lg font-semibold">Log Exercise</h4>
-                  <button
-                    onClick={() => setShowExerciseForm(false)}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                </div>
-                
-                <form onSubmit={handleLogExercise} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Exercise Name
-                    </label>
-                    <input
-                      type="text"
-                      value={exerciseForm.name}
-                      onChange={(e) => setExerciseForm({ ...exerciseForm, name: e.target.value })}
-                      placeholder="e.g., Push-ups, Running, Yoga"
-                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Duration (minutes)
-                    </label>
-                    <input
-                      type="number"
-                      value={exerciseForm.duration}
-                      onChange={(e) => setExerciseForm({ ...exerciseForm, duration: e.target.value })}
-                      placeholder="e.g., 30"
-                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Notes (optional)
-                    </label>
-                    <textarea
-                      value={exerciseForm.notes}
-                      onChange={(e) => setExerciseForm({ ...exerciseForm, notes: e.target.value })}
-                      placeholder="How did it feel? Any observations?"
-                      rows={3}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                    />
-                  </div>
-                  
-                  <div className="flex space-x-3">
-                    <button
-                      type="button"
-                      onClick={() => setShowExerciseForm(false)}
-                      className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="flex-1 py-2 px-4 bg-primary-600 text-white rounded-md hover:bg-primary-700"
-                    >
-                      Log Exercise
-                    </button>
-                  </div>
-                </form>
+          <Modal
+            isOpen={showExerciseForm}
+            onClose={() => setShowExerciseForm(false)}
+            title="Log Exercise"
+            size="md"
+          >
+            <form onSubmit={handleLogExercise} className="space-y-4">
+              <Input
+                label="Exercise Name"
+                type="text"
+                value={exerciseForm.name}
+                onChange={(e) => setExerciseForm({ ...exerciseForm, name: e.target.value })}
+                placeholder="e.g., Push-ups, Running, Yoga"
+                required
+              />
+
+              <Input
+                label="Duration (minutes)"
+                type="number"
+                value={exerciseForm.duration}
+                onChange={(e) => setExerciseForm({ ...exerciseForm, duration: e.target.value })}
+                placeholder="e.g., 30"
+              />
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Notes (optional)
+                </label>
+                <textarea
+                  value={exerciseForm.notes}
+                  onChange={(e) => setExerciseForm({ ...exerciseForm, notes: e.target.value })}
+                  placeholder="How did it feel? Any observations?"
+                  rows={3}
+                  className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+                />
               </div>
-            </div>
-          )}
+
+              <div className="flex space-x-3 pt-4">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setShowExerciseForm(false)}
+                  fullWidth
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  fullWidth
+                >
+                  Log Exercise
+                </Button>
+              </div>
+            </form>
+          </Modal>
         </div>
       )}
 
