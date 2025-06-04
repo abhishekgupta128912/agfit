@@ -108,18 +108,25 @@ const Register = () => {
   const passwordStrength = getPasswordStrength(formData.password);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-primary-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full">
+        {/* Logo and Header */}
+        <div className="text-center mb-8">
+          <div className="mx-auto h-16 w-16 bg-primary-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
+            <span className="text-2xl font-bold text-white">AF</span>
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">
             Join AgFit Today
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="text-gray-600">
             Create your account and start your personalized health journey
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        {/* Register Card */}
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/* Name Field */}
             <div>
@@ -329,13 +336,21 @@ const Register = () => {
               Already have an account?{' '}
               <Link
                 to="/login"
-                className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
+                className="font-medium text-primary-600 hover:text-primary-500 transition-colors"
               >
                 Sign in here
               </Link>
             </p>
           </div>
         </form>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center mt-8">
+          <p className="text-xs text-gray-500">
+            By creating an account, you agree to our Terms of Service and Privacy Policy
+          </p>
+        </div>
       </div>
     </div>
   );

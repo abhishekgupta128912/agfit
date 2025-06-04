@@ -18,15 +18,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
-            {/* Protected Routes */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
+            {/* Dashboard Route (handles auth internally) */}
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route
               path="/profile"
               element={

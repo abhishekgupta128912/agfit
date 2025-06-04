@@ -6,7 +6,11 @@ import {
   Target,
   CheckCircle,
   Flame,
-  Award
+  Award,
+  TrendingUp,
+  Users,
+  Brain,
+  Star
 } from 'lucide-react';
 
 // Import new UI components
@@ -14,17 +18,22 @@ import Navbar from '../layout/Navbar';
 import Card, { CardContent } from '../ui/Card';
 import Button from '../ui/Button';
 import { DashboardSkeleton } from '../ui/LoadingSkeleton';
+import LoginPromptModal from '../ui/LoginPromptModal';
 
 // Import dashboard components
 import StatsCard from './StatsCard';
 import DailyCheckin from './DailyCheckin';
 import ProgressChart from './ProgressChart';
 
+// Import hooks
+import { useLoginPrompt } from '../../hooks/useLoginPrompt';
+
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  
+  const { isLoginPromptOpen, promptFeature, requireAuth, closeLoginPrompt } = useLoginPrompt();
+
   // State management
   const [profileStatus, setProfileStatus] = useState(null);
   const [todayProgress, setTodayProgress] = useState(null);
@@ -41,12 +50,17 @@ const Dashboard = () => {
     }
   }, [location.state]);
 
-  // Load all dashboard data
+  // Load all dashboard data (only when authenticated)
   useEffect(() => {
     const loadDashboardData = async () => {
+      if (!isAuthenticated) {
+        setIsLoading(false);
+        return;
+      }
+
       try {
         setIsLoading(true);
-        
+
         // Load profile status
         const profileResponse = await profileAPI.getProfileStatus();
         if (profileResponse.success) {
@@ -79,7 +93,7 @@ const Dashboard = () => {
     };
 
     loadDashboardData();
-  }, []);
+  }, [isAuthenticated]);
 
   // Handle progress updates
   const handleProgressUpdate = async (type, data) => {
@@ -114,8 +128,8 @@ const Dashboard = () => {
     }
   };
 
-  // Show loading skeleton while data is loading
-  if (isLoading) {
+  // Show loading skeleton while data is loading (only for authenticated users)
+  if (isLoading && isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Navbar />
@@ -124,6 +138,141 @@ const Dashboard = () => {
             <DashboardSkeleton />
           </div>
         </main>
+      </div>
+    );
+  }
+
+  // Public Dashboard View (when not authenticated)
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100">
+        <Navbar />
+
+        {/* Hero Section */}
+        <main className="max-w-7xl mx-auto py-12 sm:px-6 lg:px-8">
+          <div className="px-4 py-6 sm:px-0">
+            {/* Welcome Hero */}
+            <div className="text-center mb-16 animate-fade-in">
+              <div className="mx-auto h-20 w-20 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                <TrendingUp className="h-10 w-10 text-white" />
+              </div>
+              <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
+                Welcome to <span className="text-primary-600">AgFit</span>
+              </h1>
+              <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                Your AI-powered health and wellness companion. Track your progress, get personalized recommendations, and achieve your fitness goals.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  onClick={() => navigate('/register')}
+                  className="hover-lift"
+                >
+                  Get Started Free
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => navigate('/login')}
+                  className="hover-lift"
+                >
+                  Sign In
+                </Button>
+              </div>
+            </div>
+
+            {/* Features Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+              <Card
+                className="text-center p-8 hover-lift animate-slide-in-up cursor-pointer"
+                style={{ animationDelay: '0.1s' }}
+                onClick={() => requireAuth(null, 'daily progress tracking')}
+              >
+                <div className="mx-auto h-16 w-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-4">
+                  <Target className="h-8 w-8 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Daily Tracking</h3>
+                <p className="text-gray-600">
+                  Log your meals, exercises, and wellness activities with our intuitive interface.
+                </p>
+              </Card>
+
+              <Card
+                className="text-center p-8 hover-lift animate-slide-in-up cursor-pointer"
+                style={{ animationDelay: '0.2s' }}
+                onClick={() => requireAuth(null, 'AI-powered recommendations')}
+              >
+                <div className="mx-auto h-16 w-16 bg-purple-100 rounded-2xl flex items-center justify-center mb-4">
+                  <Brain className="h-8 w-8 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">AI Recommendations</h3>
+                <p className="text-gray-600">
+                  Get personalized health and fitness recommendations powered by advanced AI.
+                </p>
+              </Card>
+
+              <Card
+                className="text-center p-8 hover-lift animate-slide-in-up cursor-pointer"
+                style={{ animationDelay: '0.3s' }}
+                onClick={() => requireAuth(null, 'progress analytics')}
+              >
+                <div className="mx-auto h-16 w-16 bg-green-100 rounded-2xl flex items-center justify-center mb-4">
+                  <TrendingUp className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Progress Analytics</h3>
+                <p className="text-gray-600">
+                  Visualize your progress with detailed charts and insights to stay motivated.
+                </p>
+              </Card>
+            </div>
+
+            {/* Stats Section */}
+            <div className="bg-white rounded-2xl shadow-xl p-8 mb-16 animate-scale-in">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">Join Thousands of Users</h2>
+                <p className="text-gray-600">Start your health journey with AgFit today</p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-primary-600 mb-2">10K+</div>
+                  <div className="text-gray-600">Active Users</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-primary-600 mb-2">50K+</div>
+                  <div className="text-gray-600">Workouts Tracked</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-primary-600 mb-2">95%</div>
+                  <div className="text-gray-600">User Satisfaction</div>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA Section */}
+            <div className="text-center animate-fade-in">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Ready to Transform Your Health?</h2>
+              <p className="text-xl text-gray-600 mb-8">
+                Join AgFit today and start your personalized wellness journey
+              </p>
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={() => navigate('/register')}
+                className="hover-lift"
+              >
+                Start Your Free Journey
+              </Button>
+            </div>
+          </div>
+        </main>
+
+        {/* Login Prompt Modal */}
+        <LoginPromptModal
+          isOpen={isLoginPromptOpen}
+          onClose={closeLoginPrompt}
+          feature={promptFeature}
+        />
       </div>
     );
   }
@@ -331,6 +480,13 @@ const Dashboard = () => {
           </div>
         </div>
       </main>
+
+      {/* Login Prompt Modal */}
+      <LoginPromptModal
+        isOpen={isLoginPromptOpen}
+        onClose={closeLoginPrompt}
+        feature={promptFeature}
+      />
     </div>
   );
 };
