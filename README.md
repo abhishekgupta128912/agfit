@@ -1,132 +1,155 @@
-# AI-Powered Health & Wellness Platform
+# AgFit - AI-Powered Health & Wellness Platform
 
-## 🎯 Project Overview
-A personalized health and wellness platform that uses AI to provide customized nutrition and fitness recommendations based on user profiles and goals.
+A comprehensive health and wellness platform that leverages artificial intelligence to provide personalized fitness recommendations, nutrition planning, and progress tracking.
 
-## 🏗️ Architecture
-- **Frontend:** React + Vite + Tailwind CSS
-- **Backend:** Node.js + Express.js
-- **Database:** MongoDB Atlas
-- **AI:** OpenAI GPT-4 API
-- **Auth:** JWT-based authentication
+## Features
 
-## 📅 7-Day Development Plan
+- **User Authentication** - Secure registration and login system
+- **Health Profile Management** - Comprehensive health assessment
+- **AI-Powered Recommendations** - Personalized nutrition, workout, and wellness plans
+- **Progress Tracking** - Daily logging of meals, exercises, and wellness activities
+- **Analytics Dashboard** - Visual progress tracking with charts and statistics
+- **Mobile-Optimized** - Responsive design for all devices
 
-### Day 1: Project Setup & Planning
-- [x] Initialize MERN stack project
-- [x] Setup MongoDB connection
-- [x] Configure OpenAI API
-- [x] Create project structure
+## Technology Stack
 
-### Day 2: Authentication System
-- [x] Implement user registration/login
-- [x] JWT token management
-- [x] Protected routes
-- [x] Error handling
+### Frontend
+- React 18 with Vite
+- Tailwind CSS
+- Axios for API communication
+- Lucide React for icons
 
-### Day 3: User Profile & Health Input
-- [x] Health profile form
-- [x] Data validation
-- [x] Profile storage
-- [x] Edit profile functionality
+### Backend
+- Node.js with Express.js
+- MongoDB with Mongoose
+- JWT authentication
+- OpenAI API integration
 
-### Day 4: AI Recommendation Engine
-- [x] OpenAI API integration
-- [x] Prompt engineering for health recommendations
-- [x] Store AI responses
-- [x] Display personalized plans
-
-### Day 5: Dashboard & Progress Tracking
-- [ ] User dashboard
-- [ ] Progress tracking system
-- [ ] Analytics display
-- [ ] Mark activities as complete
-
-### Day 6: UI/UX Polish
-- [ ] Responsive design
-- [ ] Tailwind CSS styling
-- [ ] Component optimization
-- [ ] Mobile-first approach
-
-### Day 7: Testing & Deployment
-- [ ] End-to-end testing
-- [ ] Bug fixes
-- [ ] Deploy to production
-- [ ] Performance optimization
-
-## 🚀 Getting Started
+## Quick Start
 
 ### Prerequisites
-- Node.js (v18+)
-- MongoDB Atlas account
+- Node.js (v18 or higher)
+- MongoDB (local or Atlas)
 - OpenAI API key
 
 ### Installation
-```bash
-# Clone the repository
-git clone <repository-url>
 
-# Install backend dependencies
-cd backend
-npm install
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/agfit.git
+   cd agfit
+   ```
 
-# Install frontend dependencies
-cd ../frontend
-npm install
+2. Install dependencies
+   ```bash
+   npm run install:all
+   ```
 
-# Setup environment variables
-cp .env.example .env
-# Add your MongoDB URI and OpenAI API key
+3. Set up environment variables
 
-# Start development servers
-npm run dev
-```
+   **Backend** (`backend/.env`):
+   ```env
+   NODE_ENV=development
+   PORT=5000
+   MONGODB_URI=your-mongodb-connection-string
+   JWT_SECRET=your-super-secure-jwt-secret
+   OPENAI_API_KEY=your-openai-api-key
+   FRONTEND_URL=http://localhost:5173
+   ```
 
-## 📁 Project Structure
+   **Frontend** (`frontend/.env`):
+   ```env
+   VITE_API_URL=http://localhost:5000/api
+   VITE_APP_NAME=AgFit
+   VITE_APP_VERSION=1.0.0
+   ```
+
+4. Start development servers
+   ```bash
+   npm run dev
+   ```
+
+5. Open your browser
+   - Frontend: http://localhost:5173
+   - Backend API: http://localhost:5000
+
+## Project Structure
+
 ```
 agfit/
-├── backend/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── middleware/
-│   └── server.js
-├── frontend/
+├── backend/                 # Node.js/Express API server
+│   ├── config/             # Database configuration
+│   ├── controllers/        # Route controllers
+│   ├── middleware/         # Custom middleware
+│   ├── models/            # MongoDB models
+│   ├── routes/            # API routes
+│   └── services/          # Business logic services
+├── frontend/               # React frontend application
 │   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── hooks/
-│   │   └── utils/
-│   └── public/
-└── README.md
+│   │   ├── components/    # React components
+│   │   ├── context/       # React context providers
+│   │   ├── pages/         # Page components
+│   │   └── utils/         # Utility functions
+│   └── public/            # Static assets
+└── package.json           # Root package configuration
 ```
 
-## 🔧 Environment Variables
+## API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `GET /api/auth/me` - Get current user
+
+### Health Profile
+- `GET /api/profile` - Get user profile
+- `POST /api/profile` - Create/update profile
+- `GET /api/profile/status` - Get profile completion status
+
+### AI Recommendations
+- `POST /api/ai/nutrition` - Generate nutrition plan
+- `POST /api/ai/workout` - Generate workout plan
+- `POST /api/ai/wellness` - Generate wellness plan
+- `GET /api/ai/recommendations` - Get user recommendations
+
+### Progress Tracking
+- `GET /api/progress/today` - Get today's progress
+- `POST /api/progress/meal` - Log a meal
+- `POST /api/progress/water` - Log water intake
+- `POST /api/progress/exercise` - Log an exercise
+- `GET /api/progress/history` - Get progress history
+
+## Deployment
+
+### Backend (Render)
+The backend is configured for deployment on Render. See `render.yaml` for configuration.
+
+### Frontend (GitHub Pages)
+The frontend automatically deploys to GitHub Pages via GitHub Actions.
+
+### Quick Deploy
+```bash
+npm run deploy
 ```
-MONGODB_URI=your_mongodb_connection_string
-OPENAI_API_KEY=your_openai_api_key
-JWT_SECRET=your_jwt_secret
-PORT=5000
+
+## Testing
+
+```bash
+# Run all tests
+npm test
+
+# Test deployment readiness
+npm run test:deployment
 ```
 
-## 📱 Features
-- User authentication and profiles
-- AI-powered health recommendations
-- Personalized nutrition plans
-- Custom workout routines
-- Progress tracking
-- Responsive design
+## License
 
-## 🎯 MVP Goals
-- User can register and create health profile
-- AI generates personalized diet and fitness plans
-- Users can track daily progress
-- Clean, responsive UI
-- Deployed and accessible online
+This project is licensed under the MIT License.
 
-## 🔮 Future Enhancements
-- Payment integration for premium features
-- Wearable device integration
-- Social features and community
-- Advanced analytics
-- Mobile app
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request

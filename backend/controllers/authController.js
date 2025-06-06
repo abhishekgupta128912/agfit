@@ -1,12 +1,32 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const { securityLogger } = require('../middleware/security');
 
-// Generate JWT Token
+// Enhanced JWT secret validation
+const getJWTSecret = () => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret || secret === 'fallback_secret_key' || secret.length < 32) {
+    throw new Error('JWT_SECRET must be set and at least 32 characters long');
+  }
+  return secret;
+};
+
+// Generate JWT Token with enhanced security
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || 'fallback_secret_key', {
-    expiresIn: '30d'
-  });
+  return jwt.sign(
+    {
+      id,
+      iat: Math.floor(Date.now() / 1000),
+      jti: crypto.randomBytes(16).toString('hex') // JWT ID for token tracking
+    },
+    getJWTSecret(),
+    {
+      expiresIn: '30d',
+      issuer: 'agfit-api',
+      audience: 'agfit-app'
+    }
+  );
 };
 
 // @desc    Register new user
@@ -74,66 +94,120 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Validation
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please provide email and password'
-      });
-    }
+    const clientIP = req.ip;
+    const userAgent = req.get('User-Agent');
 
     // Check for user and include password for comparison
     const user = await User.findByEmail(email).select('+password');
+
     if (!user) {
+      securityLogger.warn('Login attempt with non-existent email', {
+        email,
+        ip: clientIP,
+        userAgent
+      });
+
       return res.status(401).json({
         success: false,
         message: 'Invalid email or password'
       });
     }
 
+    // Check if account is locked
+    if (user.isLocked) {
+      securityLogger.warn('Login attempt on locked account', {
+        userId: user._id,
+        email: user.email,
+        ip: clientIP,
+        userAgent,
+        lockUntil: user.lockUntil
+      });
+
+      return res.status(423).json({
+        success: false,
+        message: 'Account is temporarily locked due to too many failed login attempts. Please try again later.'
+      });
+    }
+
     // Check if user is active
     if (!user.isActive) {
+      securityLogger.warn('Login attempt on inactive account', {
+        userId: user._id,
+        email: user.email,
+        ip: clientIP,
+        userAgent
+      });
+
       return res.status(401).json({
         success: false,
         message: 'Account is deactivated. Please contact support.'
       });
     }
 
-    // Check password
+    // Check password (this will handle account locking internally)
     const isPasswordMatch = await user.matchPassword(password);
+
+    // Record login attempt
+    await user.recordLoginAttempt(clientIP, userAgent, isPasswordMatch);
+
     if (!isPasswordMatch) {
+      securityLogger.warn('Failed login attempt', {
+        userId: user._id,
+        email: user.email,
+        ip: clientIP,
+        userAgent,
+        loginAttempts: user.loginAttempts
+      });
+
       return res.status(401).json({
         success: false,
         message: 'Invalid email or password'
       });
     }
 
-    // Update last login
-    user.lastLogin = new Date();
-    await user.save();
+    // Check for suspicious activity
+    const suspiciousActivity = user.checkSuspiciousActivity(clientIP, userAgent);
+    if (suspiciousActivity.suspicious) {
+      securityLogger.warn('Suspicious login activity detected', {
+        userId: user._id,
+        email: user.email,
+        ip: clientIP,
+        userAgent,
+        reasons: suspiciousActivity.reasons
+      });
+
+      // You might want to require additional verification here
+      // For now, we'll just log it and continue
+    }
 
     // Generate token
     const token = generateToken(user._id);
+
+    // Log successful login
+    securityLogger.info('Successful login', {
+      userId: user._id,
+      email: user.email,
+      ip: clientIP,
+      userAgent
+    });
 
     res.status(200).json({
       success: true,
       message: 'Login successful',
       data: {
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          profileCompleted: user.profileCompleted,
-          lastLogin: user.lastLogin
-        },
+        user: user.getSafeUserData(),
         token
       }
     });
 
   } catch (error) {
-    console.error('Login error:', error);
+    securityLogger.error('Login error', {
+      error: error.message,
+      stack: error.stack,
+      ip: req.ip,
+      userAgent: req.get('User-Agent')
+    });
+
     res.status(500).json({
       success: false,
       message: 'Server error during login',

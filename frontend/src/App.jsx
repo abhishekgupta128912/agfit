@@ -20,8 +20,18 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
-            {/* Dashboard Route (handles auth internally) */}
-            <Route path="/dashboard" element={<Dashboard />} />
+            {/* Home Route (public landing page) */}
+            <Route path="/" element={<Dashboard />} />
+
+            {/* Protected Dashboard Route */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/profile"
               element={
@@ -38,9 +48,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
-            {/* Default redirect */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
             {/* Catch all route */}
             <Route path="*" element={<Navigate to="/dashboard" replace />} />

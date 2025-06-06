@@ -2,6 +2,7 @@ const OpenAI = require('openai');
 
 // Initialize OpenAI client
 if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'your-openai-api-key-here') {
+  console.error('❌ OpenAI API key is required. Please set OPENAI_API_KEY in your environment variables.');
   throw new Error('OpenAI API key is required. Please set OPENAI_API_KEY in your environment variables.');
 }
 

@@ -69,20 +69,20 @@ const Dashboard = () => {
 
         // Load today's progress
         const todayResponse = await progressAPI.getTodayProgress();
-        if (todayResponse.success) {
-          setTodayProgress(todayResponse.data);
+        if (todayResponse.data.success) {
+          setTodayProgress(todayResponse.data.data);
         }
 
         // Load progress history (last 7 days)
         const historyResponse = await progressAPI.getProgressHistory({ days: 7 });
-        if (historyResponse.success) {
-          setProgressHistory(historyResponse.data);
+        if (historyResponse.data.success) {
+          setProgressHistory(historyResponse.data.data);
         }
 
         // Load user statistics
         const statsResponse = await progressAPI.getUserStats();
-        if (statsResponse.success) {
-          setUserStats(statsResponse.data);
+        if (statsResponse.data.success) {
+          setUserStats(statsResponse.data.data);
         }
 
       } catch (error) {
