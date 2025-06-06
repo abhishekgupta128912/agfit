@@ -9,18 +9,19 @@ const {
 } = require('../controllers/authController');
 const { protect, logout } = require('../middleware/auth');
 const { authValidation } = require('../middleware/validation');
+const { recaptchaConfigs } = require('../middleware/recaptcha');
 
 const router = express.Router();
 
 // @route   POST /api/auth/register
 // @desc    Register a new user
 // @access  Public
-router.post('/register', authValidation.register, registerUser);
+router.post('/register', recaptchaConfigs.register, authValidation.register, registerUser);
 
 // @route   POST /api/auth/login
 // @desc    Login user
 // @access  Public
-router.post('/login', authValidation.login, loginUser);
+router.post('/login', recaptchaConfigs.login, authValidation.login, loginUser);
 
 // @route   GET /api/auth/me
 // @desc    Get current user profile
@@ -35,7 +36,7 @@ router.post('/logout', protect, logout, logoutUser);
 // @route   POST /api/auth/forgot-password
 // @desc    Send password reset email
 // @access  Public
-router.post('/forgot-password', authValidation.forgotPassword, forgotPassword);
+router.post('/forgot-password', recaptchaConfigs.forgotPassword, authValidation.forgotPassword, forgotPassword);
 
 // @route   POST /api/auth/reset-password
 // @desc    Reset password with token
